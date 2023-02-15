@@ -20,14 +20,20 @@ import java.awt.event.ActionEvent;
 
 public class VentanaGym extends JFrame {
 
+	private static final double DESCUENTOFAMILIAR = 0.1;
+	private static final double DESCUENTOJOVEN = 0.15;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField txtNombre;
+	private JTextField txtApellidos;
+	private JTextField txtDni;
+	private JTextField txtTelefono;
 	private final ButtonGroup grupoDescuento = new ButtonGroup();
 	private JComboBox comboAbonos;
 	private JLabel lblPrecio;
+	private JTextArea textArea;
+	private JRadioButton rdbSin;
+	private JRadioButton rdbJoven;
+	private JRadioButton rdbFamiliar;
 
 	/**
 	 * Launch the application.
@@ -60,9 +66,9 @@ public class VentanaGym extends JFrame {
 		JLabel lblNewLabel = new JLabel("Nombre:");
 		contentPane.add(lblNewLabel, "cell 0 0,alignx trailing");
 		
-		textField = new JTextField();
-		contentPane.add(textField, "cell 1 0 2 1,growx");
-		textField.setColumns(10);
+		txtNombre = new JTextField();
+		contentPane.add(txtNombre, "cell 1 0 2 1,growx");
+		txtNombre.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Apellidos:");
 		contentPane.add(lblNewLabel_1, "cell 2 0,alignx trailing");
@@ -70,16 +76,16 @@ public class VentanaGym extends JFrame {
 		JLabel lblNewLabel_7 = new JLabel("Apellidos:");
 		contentPane.add(lblNewLabel_7, "cell 3 0,alignx trailing");
 		
-		textField_1 = new JTextField();
-		contentPane.add(textField_1, "cell 4 0,growx");
-		textField_1.setColumns(10);
+		txtApellidos = new JTextField();
+		contentPane.add(txtApellidos, "cell 4 0,growx");
+		txtApellidos.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("DNI:");
 		contentPane.add(lblNewLabel_2, "cell 0 2,alignx trailing");
 		
-		textField_2 = new JTextField();
-		contentPane.add(textField_2, "cell 1 2 2 1,growx");
-		textField_2.setColumns(10);
+		txtDni = new JTextField();
+		contentPane.add(txtDni, "cell 1 2 2 1,growx");
+		txtDni.setColumns(10);
 		
 		JLabel lblNewLabel_3 = new JLabel("Teléfono");
 		contentPane.add(lblNewLabel_3, "cell 2 2,alignx trailing");
@@ -87,9 +93,9 @@ public class VentanaGym extends JFrame {
 		JLabel lblNewLabel_9 = new JLabel("Teléfono:");
 		contentPane.add(lblNewLabel_9, "cell 3 2,alignx trailing");
 		
-		textField_3 = new JTextField();
-		contentPane.add(textField_3, "cell 4 2,growx");
-		textField_3.setColumns(10);
+		txtTelefono = new JTextField();
+		contentPane.add(txtTelefono, "cell 4 2,growx");
+		txtTelefono.setColumns(10);
 		
 		JLabel lblNewLabel_4 = new JLabel("Tipo Abono:");
 		contentPane.add(lblNewLabel_4, "cell 0 4,alignx trailing");
@@ -106,16 +112,16 @@ public class VentanaGym extends JFrame {
 		JLabel lblNewLabel_5 = new JLabel("Descuento:");
 		contentPane.add(lblNewLabel_5, "cell 0 6");
 		
-		JRadioButton rdbSin = new JRadioButton("Sin descuento");
+		rdbSin = new JRadioButton("Sin descuento");
 		rdbSin.setSelected(true);
 		grupoDescuento.add(rdbSin);
 		contentPane.add(rdbSin, "cell 1 6");
 		
-		JRadioButton rdbFamiliar = new JRadioButton("Familiar");
+		rdbFamiliar = new JRadioButton("Familiar");
 		grupoDescuento.add(rdbFamiliar);
 		contentPane.add(rdbFamiliar, "cell 2 6");
 		
-		JRadioButton rdbJoven = new JRadioButton("Joven");
+		rdbJoven = new JRadioButton("Joven");
 		grupoDescuento.add(rdbJoven);
 		contentPane.add(rdbJoven, "cell 3 6");
 		
@@ -131,11 +137,35 @@ public class VentanaGym extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, "cell 0 9 5 1,grow");
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		
 		JButton btnNewButton = new JButton("Aceptar");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rellenarDatos();
+			}
+		});
 		contentPane.add(btnNewButton, "cell 0 10 5 1,alignx center");
+	}
+
+	protected void rellenarDatos() {
+		String nombre = txtNombre.getText();
+		String apellidos = txtApellidos.getText();
+		String dni = txtDni.getText();
+		String abono = (String) comboAbonos.getSelectedItem();
+		double precio = Double.parseDouble(lblPrecio.getText());
+		
+		double descuento = 0;
+		if (rdbJoven.isSelected()) {
+			descuento=DESCUENTOJOVEN;
+		} else if (rdbFamiliar.isSelected()) {
+			descuento=DESCUENTOFAMILIAR;
+		}
+		
+		textArea.setText(String.format("El cliente %s %s ha contratado el %s por un precio de %.2f que con descuento de %.2f%% queda %.2f\n",
+				nombre, apellidos, abono,precio, descuento*100, precio-precio*descuento ));
+		
 	}
 
 	protected void actualizarPrecio() {
